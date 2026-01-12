@@ -1,9 +1,4 @@
-// Base URL configuration
-const BASE_URL = 'https://ventureconsultancyservices.com';
-
-// Export base URL
+const BASE_URL = 'https://node-backend-two-nu.vercel.app';
 export default BASE_URL;
-
-// Export as named export as well
 export { BASE_URL };
 
