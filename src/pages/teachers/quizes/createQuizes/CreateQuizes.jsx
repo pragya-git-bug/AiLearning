@@ -324,7 +324,7 @@ const CreateQuizes = () => {
             };
 
             console.log('Creating quiz with data:', quizData);
-            console.log('API URL:', `${BASE_URLL}/api/quizes/add`);
+            console.log('API URL:', `${BASE_URL}/api/quizes/add`);
 
             // Call API to create quiz
             const result = await createQuiz(quizData);

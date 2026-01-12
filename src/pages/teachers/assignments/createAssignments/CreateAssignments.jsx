@@ -10,14 +10,20 @@ const CreateAssignments = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { currentUser } = useSelector((state) => state.userData);
-    
+
+    const classOptions = [
+        "1st Class", "2nd Class", "3rd Class", "4th Class", "5th Class",
+        "6th Class", "7th Class", "8th Class", "9th Class", "10th Class",
+        "11th Class", "12th Class"
+    ];
+
     const [formData, setFormData] = useState({
         className: '',
         subjects: '',
         topics: '',
         difficulty: 'medium'
     });
-    
+
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedQuestions, setGeneratedQuestions] = useState([]);
     const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -78,7 +84,7 @@ const CreateAssignments = () => {
             });
 
             const data = await response.json();
-            
+
             if (!response.ok) {
                 throw new Error(data.error?.message || 'Failed to generate questions');
             }
@@ -130,15 +136,15 @@ const CreateAssignments = () => {
 
     const toggleQuestionSelection = (question) => {
         const isSelected = selectedQuestions.some(q => q.id === question.id);
-        
+
         if (isSelected) {
             setSelectedQuestions(selectedQuestions.filter(q => q.id !== question.id));
-            setGeneratedQuestions(generatedQuestions.map(q => 
+            setGeneratedQuestions(generatedQuestions.map(q =>
                 q.id === question.id ? { ...q, selected: false } : q
             ));
         } else {
             setSelectedQuestions([...selectedQuestions, { ...question, selected: true }]);
-            setGeneratedQuestions(generatedQuestions.map(q => 
+            setGeneratedQuestions(generatedQuestions.map(q =>
                 q.id === question.id ? { ...q, selected: true } : q
             ));
         }
@@ -146,7 +152,7 @@ const CreateAssignments = () => {
 
     const removeSelectedQuestion = (questionId) => {
         setSelectedQuestions(selectedQuestions.filter(q => q.id !== questionId));
-        setGeneratedQuestions(generatedQuestions.map(q => 
+        setGeneratedQuestions(generatedQuestions.map(q =>
             q.id === questionId ? { ...q, selected: false } : q
         ));
     };
@@ -215,7 +221,7 @@ const CreateAssignments = () => {
             if (result.success) {
                 // Show success message
                 setSuccessMessage(`Assignment "${assignmentDetails.assignmentName}" created successfully!`);
-                
+
                 // Also add to Redux for local state management
                 const newAssignment = {
                     assignmentName: assignmentDetails.assignmentName,
@@ -285,14 +291,17 @@ const CreateAssignments = () => {
                                 <GraduationCap size={18} className="text-purple-600" />
                                 Class Name
                             </label>
-                            <input
-                                type="text"
+                            <select
                                 name="className"
                                 value={formData.className}
                                 onChange={handleChange}
-                                placeholder="e.g., 8th Grade, Class 10"
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all text-gray-900"
-                            />
+                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all text-gray-900 bg-white"
+                            >
+                                <option value="" disabled>Select Class</option>
+                                {classOptions.map((cls) => (
+                                    <option key={cls} value={cls}>{cls}</option>
+                                ))}
+                            </select>
                         </div>
 
                         {/* Subjects */}
@@ -339,11 +348,10 @@ const CreateAssignments = () => {
                                         key={level}
                                         type="button"
                                         onClick={() => setFormData({ ...formData, difficulty: level })}
-                                        className={`px-6 py-3 rounded-xl font-semibold transition-all capitalize ${
-                                            formData.difficulty === level
+                                        className={`px-6 py-3 rounded-xl font-semibold transition-all capitalize ${formData.difficulty === level
                                                 ? 'bg-purple-600 text-white shadow-lg scale-105'
                                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
+                                            }`}
                                     >
                                         {level}
                                     </button>
@@ -398,17 +406,15 @@ const CreateAssignments = () => {
                                 {generatedQuestions.map((question) => (
                                     <div
                                         key={question.id}
-                                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                                            question.selected
+                                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${question.selected
                                                 ? 'border-purple-500 bg-purple-50'
                                                 : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
-                                        }`}
+                                            }`}
                                         onClick={() => toggleQuestionSelection(question)}
                                     >
                                         <div className="flex items-start gap-3">
-                                            <div className={`mt-1 flex-shrink-0 ${
-                                                question.selected ? 'text-purple-600' : 'text-gray-400'
-                                            }`}>
+                                            <div className={`mt-1 flex-shrink-0 ${question.selected ? 'text-purple-600' : 'text-gray-400'
+                                                }`}>
                                                 {question.selected ? (
                                                     <CheckCircle2 size={20} className="text-purple-600" />
                                                 ) : (
@@ -504,7 +510,7 @@ const CreateAssignments = () => {
 
                             {/* Finalize Button */}
                             {selectedQuestions.length > 0 && (
-                                <button 
+                                <button
                                     onClick={handleFinalizeClick}
                                     className="mt-6 w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
                                 >
